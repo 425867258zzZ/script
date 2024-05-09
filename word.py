@@ -72,9 +72,9 @@ class Word:
         """
         获取词典,读取英文字段/单词,翻译/选项文字,并点击继续按钮
         """
-        pyautogui.screenshot(word_image_path, region=WORD_REGION)
-        pyautogui.screenshot(translation_image_path, region=TRANSLATION_REGION)
+        pyautogui.screenshot(WORD_IMAGE_PATH, region=WORD_REGION)
+        pyautogui.screenshot(TRANSLATION_IMAGE_PATH, region=TRANSLATION_REGION)
 
-        self.creat_dic(word_image_path, translation_image_path)
+        self.creat_dic(WORD_IMAGE_PATH, TRANSLATION_IMAGE_PATH)
         print(self.get_dic())
         pyautogui.click(GOON_BUTTON_REGION[0], GOON_BUTTON_REGION[1])

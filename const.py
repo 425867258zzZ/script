@@ -1,10 +1,10 @@
-word_image_path = "image/word_in_dic.png"
-translation_image_path = "image/translation_in_dic.png"
-translation_in_question_path = "image/translation_in_dic.png"
-word_in_question_path = "image/question_word.png"
+WORD_IMAGE_PATH = "image/word_in_dic.png"
+TRANSLATION_IMAGE_PATH = "image/translation_in_dic.png"
+TRANSLATION_IN_QUESTION_PATH = "image/translation_in_dic.png"
+WORD_IN_QUESTION_PATH = "image/question_word.png"
 
-screenshot_path = "image/screenshot.png"
-screenshot_region = (67, 238, 1199, 1138)
+SCREENSHOT_PATH = "image/screenshot.png"
+SCREENSHOT_REGION = (67, 238, 1199, 1138)
 # 跳过单词所在区域
 WORD_REGION = (453, 380, 430, 78)
 # 跳过部分单词的释义所在区域

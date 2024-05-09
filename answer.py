@@ -34,8 +34,8 @@ class Answer:
         所以获取当前行数用于动态创建const文件中的类获取当前页面下的正确区域
         :return:行数
         """
-        pyautogui.screenshot(screenshot_path, region=screenshot_region)
-        img = cv2.imread(screenshot_path)
+        pyautogui.screenshot(SCREENSHOT_PATH, region=SCREENSHOT_REGION)
+        img = cv2.imread(SCREENSHOT_PATH)
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         lines = pytesseract.image_to_string(gray_img, lang="eng", config='--psm 6').splitlines()
         print(len(lines))
@@ -99,8 +99,8 @@ class Answer:
         line_name = eval("Line" + str(self.get_lines()))
         line = line_name()
         word_in_question_region = line.get_question_region()
-        pyautogui.screenshot(word_in_question_path, region=word_in_question_region)
-        word_get = Word.get_word_in_question(word_in_question_path)
+        pyautogui.screenshot(WORD_IN_QUESTION_PATH, region=word_in_question_region)
+        word_get = Word.get_word_in_question(WORD_IN_QUESTION_PATH)
 
         # 若当前单词不在字典中(过去式,复数等),则尝试获取最相似的单词,即词根
         max_similarity = 0
