@@ -115,8 +115,8 @@ class Answer:
         print(word_get in word_dic)
         translations_get = word_dic[word_get]
         translation_in_question_region = line.get_translation_region()
-        pyautogui.screenshot(translation_in_question_path, region=translation_in_question_region)
-        options_get = Word.get_translation_in_dic(translation_in_question_path)[:4]
+        pyautogui.screenshot(TRANSLATION_IN_QUESTION_PATH, region=translation_in_question_region)
+        options_get = Word.get_translation_in_dic(TRANSLATION_IN_QUESTION_PATH)[:4]
         try:
             options_result = self.get_options(translations_get, options_get)
             self.answer_and_check(line.get_option_zone(), options_result)
