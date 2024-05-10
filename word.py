@@ -19,7 +19,7 @@ class Word:
     def get_word_in_dic(word_image_path):
         img = cv2.imread(word_image_path)
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        word = pytesseract.image_to_string(gray_img, lang="eng")
+        word = pytesseract.image_to_string(gray_img, lang="eng", config=CUSTOM_CONFIG)
         return word.replace("\n", "")
 
     @staticmethod
@@ -31,7 +31,7 @@ class Word:
         """
         img = cv2.imread(translation_image_path)
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        result = pytesseract.image_to_string(gray_img, lang='chi_sim', config='--psm 6').splitlines()
+        result = pytesseract.image_to_string(gray_img, lang='chi_sim', config=r'--oem 3 --psm 6').splitlines()
         # 去除可能的空行,同时去除可能出现的多识别的非中文字符
         result = [line.replace(" ", "") for line in result if (line != "" and (line.isalnum() == False))]
         print(result)
@@ -65,7 +65,7 @@ class Word:
         result = cv2.bitwise_and(image_cv, image_cv, mask=mask)
         result[mask == 0] = [255, 255, 255]
 
-        text = pytesseract.image_to_string(result, lang="eng")
+        text = pytesseract.image_to_string(result, lang="eng", config=CUSTOM_CONFIG)
         return text.strip().lower().replace(" ", "")
 
     def routine(self):

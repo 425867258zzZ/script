@@ -1,18 +1,19 @@
-WORD_IMAGE_PATH = "image/word_in_dic.png"
-TRANSLATION_IMAGE_PATH = "image/translation_in_dic.png"
-TRANSLATION_IN_QUESTION_PATH = "image/translation_in_dic.png"
-WORD_IN_QUESTION_PATH = "image/question_word.png"
-
+WORD_IMAGE_PATH = "image/word_image.png"
+TRANSLATION_IMAGE_PATH = "image/translation_image.png"
+TRANSLATION_IN_QUESTION_PATH = "image/translation_image.png"
+WORD_IN_QUESTION_PATH = "image/word_in_question.png"
 SCREENSHOT_PATH = "image/screenshot.png"
 SCREENSHOT_REGION = (67, 238, 1199, 1138)
 # 跳过单词所在区域
-WORD_REGION = (453, 380, 430, 78)
+WORD_REGION = (400, 380, 500, 78)
 # 跳过部分单词的释义所在区域
 TRANSLATION_REGION = (142, 854, 550, 284)
 # 继续按钮坐标
 GOON_BUTTON_REGION = (971, 1314)
 # 下一题按钮坐标
 NEXT_BUTTON_REGION = (966, 1335)
+
+CUSTOM_CONFIG = r'--oem 3 --psm 6 -c tessedit_char_whitelist=abcdefghijklmnopqrstuvwxyz'
 
 
 class Line:

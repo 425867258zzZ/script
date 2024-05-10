@@ -27,6 +27,29 @@ class Answer:
         return intersection / union
 
     @staticmethod
+    def get_origin_word(word_get, word_dic):
+        """
+        获取当前单词的词根
+        :param word_dic: 词典
+        :param word_get: 当前题中的单词
+        :return: 当前单词的词根
+        """
+        word_res = word_get
+        word_len = len(word_get)
+        max_similarity = 0
+        for word in word_dic.keys():
+            max_len = max(len(word), word_len)
+            min_len = min(len(word), word_len)
+            same = 0
+            for i in range(min_len):
+                if word_get[i] == word[i]:
+                    same += 1
+            if (similarity := same / max_len) > max_similarity:
+                max_similarity = similarity
+                word_res = word
+        return word_res
+
+    @staticmethod
     def get_lines():
         """
         获取当前页面行数
@@ -38,8 +61,8 @@ class Answer:
         img = cv2.imread(SCREENSHOT_PATH)
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         lines = pytesseract.image_to_string(gray_img, lang="eng", config='--psm 6').splitlines()
-        print(len(lines))
-        return len(lines)
+        result = [line for line in lines if line != '']
+        return len(result)
 
     @staticmethod
     def is_red(rgb):
@@ -51,6 +74,15 @@ class Answer:
         return b < 10 or (r - g > 150 and r - b > 150)
 
     @staticmethod
+    def is_green(rgb):
+        """
+        两次都做错,会进入释义界面,在固定位置会有一个绿点,以此判断
+        判断给定的 RGB 值是否属于绿色。
+        """
+        r, g, b = rgb
+        return g > r and g > b
+
+    @staticmethod
     def get_options(translations, options):
         """
         获取当前单词对应的可能选项
@@ -58,37 +90,40 @@ class Answer:
         :param options: 当前选项的list
         :return: 一个存有4个选项代号的list,记录了当前单词最可能的选项list
         """
+        print("单词释义为" + str(translations))
         options_dict = {}
         for j in range(4):
             # 每个选项内容对应一个按钮编号1-4
             options_dict[options[j]] = j
-        result = []
+        options_result = []
+        # 只会有两次点击机会
         for t in range(len(translations)):
             sim = {}
             for option in options:
                 sim[option] = Answer.get_similarity(translations[t], option)
             sim = sorted(sim.items(), key=lambda item: item[1], reverse=True)
             if t == 0:
-                result = [options_dict[option_tuple[0]] for option_tuple in sim]
+                options_result = [options_dict[option_tuple[0]] for option_tuple in sim]
                 options.remove(sim[0][0])
             else:
-                result[t] = options_dict[sim[0][0]]
-        print(result)
-        return result
+                options_result[t] = options_dict[sim[0][0]]
+        print(options_result)
+        return options_result
 
     def answer_and_check(self, option_region, options):
         pyautogui.click(option_region[options[0]][0], option_region[options[0]][1])
-        time.sleep(0.2)
-        screenshot = ImageGrab.grab()
+        time.sleep(0.3)
+        screenshot1 = ImageGrab.grab()
         # 获取指定点的 RGB 值
-        rgb_color1 = screenshot.getpixel((option_region[options[0]][0], option_region[options[0]][1]))
+        rgb_color1 = screenshot1.getpixel((option_region[options[0]][0], option_region[options[0]][1]))
         if self.is_red(rgb_color1):
             print("第一次答案错误")
             time.sleep(2.0)
             pyautogui.click(option_region[options[1]][0], option_region[options[1]][1])
-            time.sleep(0.5)
-        # 若两次答案都是错的,会出现一个释义界面,必然有大于7行文字,以此判断是否两次都做错了
-        if self.get_lines() > 7:
+            time.sleep(1.0)
+        screenshot2 = ImageGrab.grab()
+        rgb_color2 = screenshot2.getpixel((98, 651))
+        if self.is_green(rgb_color2) or self.get_lines() > 7:
             print("第二次答案错误")
             self.wrong_answer += 1
             time.sleep(0.5)
@@ -101,19 +136,13 @@ class Answer:
         word_in_question_region = line.get_question_region()
         pyautogui.screenshot(WORD_IN_QUESTION_PATH, region=word_in_question_region)
         word_get = Word.get_word_in_question(WORD_IN_QUESTION_PATH)
+        print("当前单词识别为" + word_get)
 
         # 若当前单词不在字典中(过去式,复数等),则尝试获取最相似的单词,即词根
-        max_similarity = 0
-        if word_get not in word_dic:
-            for word_in_dic in list(word_dic.keys()):
-                if n := self.get_similarity(word_in_dic, word_get) > max_similarity:
-                    word_get = word_in_dic
-                    max_similarity = n
+        word_get = self.get_origin_word(word_get, word_dic)
         print("当前词/词根为" + word_get)
-
-        # 获取当前单词的选项内容
-        print(word_get in word_dic)
         translations_get = word_dic[word_get]
+        # 获取当前单词的选项内容
         translation_in_question_region = line.get_translation_region()
         pyautogui.screenshot(TRANSLATION_IN_QUESTION_PATH, region=translation_in_question_region)
         options_get = Word.get_translation_in_dic(TRANSLATION_IN_QUESTION_PATH)[:4]
@@ -122,10 +151,9 @@ class Answer:
             self.answer_and_check(line.get_option_zone(), options_result)
         except IndexError:
             print("选项识别错误")
-            print(translations_get)
+            print("当前选项识别为" + str(options_get))
             raise IndexError
         self.question_num += 1
-        time.sleep(1.0)
 
     def show_result(self):
         print("正确率为" + str(1 - self.wrong_answer / self.question_num))

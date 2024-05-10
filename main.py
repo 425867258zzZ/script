@@ -13,10 +13,6 @@ if __name__ == '__main__':
 
     m = int(input("输入测试个数"))
     for k in range(m):
-        try:
-            answer.routine(word_dic)
-        except IndexError:
-            # 这里用来处理意外
-            input("识别个数错误,请自行做题并点击继续后按任意键继续运行")
+        answer.routine(word_dic)
 
     answer.show_result()
