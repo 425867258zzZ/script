@@ -17,7 +17,7 @@ class Answer:
     @staticmethod
     def get_similarity(str1, str2):
         """
-        获取两组字符的相似度,使用jacquard算法,用于获取词根
+        获取两组字符的相似度,使用jacquard算法,用于获取正确选项
         :return: 相似值,∈[0,1],越高说明越相似
         """
         set1 = set(str1)
@@ -126,8 +126,8 @@ class Answer:
         if self.is_green(rgb_color2) or self.get_lines() > 7:
             print("第二次答案错误")
             self.wrong_answer += 1
-            time.sleep(0.5)
             pyautogui.click(NEXT_BUTTON_REGION[0], NEXT_BUTTON_REGION[1])
+            time.sleep(1.0)
 
     def routine(self, word_dic):
         # 依据当前行数动态获取信息
@@ -141,19 +141,21 @@ class Answer:
         # 若当前单词不在字典中(过去式,复数等),则尝试获取最相似的单词,即词根
         word_get = self.get_origin_word(word_get, word_dic)
         print("当前词/词根为" + word_get)
-        translations_get = word_dic[word_get]
-        # 获取当前单词的选项内容
-        translation_in_question_region = line.get_translation_region()
-        pyautogui.screenshot(TRANSLATION_IN_QUESTION_PATH, region=translation_in_question_region)
-        options_get = Word.get_translation_in_dic(TRANSLATION_IN_QUESTION_PATH)[:4]
         try:
+            translations_get = word_dic[word_get]
+            # 获取当前单词的选项内容
+            translation_in_question_region = line.get_translation_region()
+            pyautogui.screenshot(TRANSLATION_IN_QUESTION_PATH, region=translation_in_question_region)
+            options_get = Word.get_translation_in_dic(TRANSLATION_IN_QUESTION_PATH)[:4]
             options_result = self.get_options(translations_get, options_get)
             self.answer_and_check(line.get_option_zone(), options_result)
+        except KeyError:
+            print("单词识别错误")
+            raise KeyError
         except IndexError:
             print("选项识别错误")
-            print("当前选项识别为" + str(options_get))
             raise IndexError
         self.question_num += 1
 
     def show_result(self):
-        print("正确率为" + str(1 - self.wrong_answer / self.question_num))
+        print("正确率为" + str(100 * (1 - self.wrong_answer / self.question_num)) + '%')

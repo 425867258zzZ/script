@@ -40,7 +40,7 @@ class Line:
 
 class Line5(Line):
     # 包含绿色单词的题干区域
-    word_in_question_region = (67, 320, 1150, 105)
+    word_in_question_region = (60, 320, 1150, 105)
     # 题干选项区域
     translation_in_question_region = (320, 473, 700, 712)
     # 四个选项区域
@@ -52,7 +52,7 @@ class Line5(Line):
 
 class Line6(Line):
     # 包含绿色单词的题干区域
-    word_in_question_region = (81, 324, 1164, 191)
+    word_in_question_region = (60, 324, 1164, 191)
     # 题干选项区域
     translation_in_question_region = (322, 567, 700, 805)
     # 四个选项区域
@@ -64,7 +64,7 @@ class Line6(Line):
 
 class Line7(Line):
     # 包含绿色单词的题干区域
-    word_in_question_region = (67, 329, 1115, 266)
+    word_in_question_region = (60, 329, 1115, 266)
     # 题干选项区域
     translation_in_question_region = (315, 660, 814, 676)
     # 四个选项区域
