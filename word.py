@@ -1,5 +1,5 @@
 import cv2
-import numpy as np
+import numpy as npy
 import pyautogui
 import pytesseract
 from PIL import Image
@@ -31,9 +31,15 @@ class Word:
         """
         img = cv2.imread(translation_image_path)
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        result = pytesseract.image_to_string(gray_img, lang='chi_sim', config=r'--oem 3 --psm 6').splitlines()
+        result = pytesseract.image_to_string(
+            gray_img, lang="chi_sim", config=r"--oem 3 --psm 6"
+        ).splitlines()
         # 去除可能的空行,同时去除可能出现的多识别的非中文字符
-        result = [line.replace(" ", "") for line in result if (line != "" and (line.isalnum() == False))]
+        result = [
+            line.replace(" ", "")
+            for line in result
+            if (line != "" and (line.isalnum() == False))
+        ]
         print(result)
         return result
 
@@ -53,11 +59,11 @@ class Word:
         :return:
         """
         image = Image.open(question_image_path)
-        image_cv = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+        image_cv = cv2.cvtColor(npy.array(image), cv2.COLOR_RGB2BGR)
 
         # 定义绿色的 HSV 范围
-        lower_green = np.array([60, 60, 60])
-        upper_green = np.array([90, 255, 255])
+        lower_green = npy.array([60, 60, 60])
+        upper_green = npy.array([90, 255, 255])
 
         # 将图片转换为 HSV 格式，并根据绿色范围创建掩码,把绿色部分标记为黑色,其余部分为白色
         hsv = cv2.cvtColor(image_cv, cv2.COLOR_BGR2HSV)

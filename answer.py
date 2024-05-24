@@ -15,7 +15,7 @@ class Answer:
         self.wrong_answer = 0
 
     @staticmethod
-    def get_similarity(str1, str2):
+    def get_similarity(str1, str2) -> float:
         """
         获取两组字符的相似度,使用jacquard算法,用于获取正确选项
         :return: 相似值,∈[0,1],越高说明越相似
@@ -27,7 +27,7 @@ class Answer:
         return intersection / union
 
     @staticmethod
-    def get_origin_word(word_get, word_dic):
+    def get_origin_word(word_get, word_dic) -> str:
         """
         获取当前单词的词根
         :param word_dic: 词典
@@ -50,7 +50,7 @@ class Answer:
         return word_res
 
     @staticmethod
-    def get_lines():
+    def get_lines() -> int:
         """
         获取当前页面行数
         由于英文字段的行数会导致按钮和英文区域的位置改变,
@@ -60,12 +60,14 @@ class Answer:
         pyautogui.screenshot(SCREENSHOT_PATH, region=SCREENSHOT_REGION)
         img = cv2.imread(SCREENSHOT_PATH)
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        lines = pytesseract.image_to_string(gray_img, lang="eng", config='--psm 6').splitlines()
-        result = [line for line in lines if line != '']
+        lines = pytesseract.image_to_string(
+            gray_img, lang="eng", config="--psm 6"
+        ).splitlines()
+        result = [line for line in lines if line != ""]
         return len(result)
 
     @staticmethod
-    def is_red(rgb):
+    def is_red(rgb) -> bool:
         """
         一个题做错时,所点击的选项会变成红色,以此判断是否做错
         判断 RGB 值是否为红色
@@ -74,7 +76,7 @@ class Answer:
         return b < 10 or (r - g > 150 and r - b > 150)
 
     @staticmethod
-    def is_green(rgb):
+    def is_green(rgb) -> bool:
         """
         两次都做错,会进入释义界面,在固定位置会有一个绿点,以此判断
         判断给定的 RGB 值是否属于绿色。
@@ -83,7 +85,7 @@ class Answer:
         return g > r and g > b
 
     @staticmethod
-    def get_options(translations, options):
+    def get_options(translations, options) -> list:
         """
         获取当前单词对应的可能选项
         :param translations:某一单词的字典翻译list
@@ -115,7 +117,9 @@ class Answer:
         time.sleep(0.3)
         screenshot1 = ImageGrab.grab()
         # 获取指定点的 RGB 值
-        rgb_color1 = screenshot1.getpixel((option_region[options[0]][0], option_region[options[0]][1]))
+        rgb_color1 = screenshot1.getpixel(
+            (option_region[options[0]][0], option_region[options[0]][1])
+        )
         if self.is_red(rgb_color1):
             print("第一次答案错误")
             time.sleep(2.0)
@@ -129,7 +133,38 @@ class Answer:
             pyautogui.click(NEXT_BUTTON_REGION[0], NEXT_BUTTON_REGION[1])
             time.sleep(1.0)
 
-    def routine(self, word_dic):
+    def show_result(self):
+        print("正确率为" + str(100 * (1 - self.wrong_answer / self.question_num)) + "%")
+
+    def get_word_in_listen_part(self, options_get, word_dic) -> list:
+        """
+        获取听力部分每一个选项对应的单词
+        :param options_get: 选项内容list
+        :param word_dic: 词典
+        :return: 4个选项对应的单词list
+        """
+        res = None
+        word_res = []
+        for option in options_get:
+            max_similarity = 0
+            for word in word_dic:
+                similarity = max(
+                    [
+                        self.get_similarity(option, translation)
+                        for translation in word_dic[word]
+                    ]
+                )
+                if similarity > max_similarity:
+                    max_similarity = similarity
+                    res = word
+            word_res.append(res)
+        return word_res
+
+    def answer_routine(self, word_dic):
+        """
+        答题流程
+        :param word_dic: 词典
+        """
         # 依据当前行数动态获取信息
         line_name = eval("Line" + str(self.get_lines()))
         line = line_name()
@@ -145,8 +180,12 @@ class Answer:
             translations_get = word_dic[word_get]
             # 获取当前单词的选项内容
             translation_in_question_region = line.get_translation_region()
-            pyautogui.screenshot(TRANSLATION_IN_QUESTION_PATH, region=translation_in_question_region)
+            pyautogui.screenshot(
+                TRANSLATION_IN_QUESTION_PATH, region=translation_in_question_region
+            )
+            # 上 options_get :list['...']
             options_get = Word.get_translation_in_dic(TRANSLATION_IN_QUESTION_PATH)[:4]
+            # options_result: list[0,1,2,3]
             options_result = self.get_options(translations_get, options_get)
             self.answer_and_check(line.get_option_zone(), options_result)
         except KeyError:
@@ -157,5 +196,9 @@ class Answer:
             raise IndexError
         self.question_num += 1
 
-    def show_result(self):
-        print("正确率为" + str(100 * (1 - self.wrong_answer / self.question_num)) + '%')
+    def listen_routine(self, word_dic):
+        pyautogui.screenshot(
+            TRANSLATION_IN_QUESTION_PATH, region=LISTEN_OPTION_REGION
+        )
+        options_get = Word.get_translation_in_dic(TRANSLATION_IN_QUESTION_PATH)[:4]
+        print(self.get_word_in_listen_part(options_get, word_dic))
