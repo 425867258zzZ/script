@@ -6,9 +6,9 @@ SCREENSHOT_PATH = "image/screenshot.png"
 # 全屏区域
 SCREENSHOT_REGION = (67, 238, 1199, 1138)
 # 跳过单词所在区域
-WORD_REGION = (400, 380, 500, 78)
+WORD_REGION = (400, 370, 500, 90)
 # 跳过部分单词的释义所在区域
-TRANSLATION_REGION = (142, 854, 550, 284)
+TRANSLATION_REGION = (142, 840, 550, 284)
 # 继续按钮坐标
 GOON_BUTTON_REGION = (971, 1314)
 # 下一题按钮坐标
@@ -16,7 +16,7 @@ NEXT_BUTTON_REGION = (966, 1335)
 # 听力部分选项区域
 LISTEN_OPTION_REGION = (198, 546, 943, 686)
 # 识图config
-CUSTOM_CONFIG = r'--oem 3 --psm 6 -c tessedit_char_whitelist=abcdefghijklmnopqrstuvwxyz'
+CUSTOM_CONFIG = r'--oem 3 --psm 6 -c tessedit_char_whitelist=abcdefghijklmnopqrstuvwxyz.'
 
 
 class Line:

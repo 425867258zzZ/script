@@ -11,7 +11,7 @@ openCV 图像+pytesseract 文本识别+pyautogui 实现自动操作+numpy 数值
 
 ## 以下是程序设计报告内容
 
-**目录**
+**目**
 
 学生选课系统
 

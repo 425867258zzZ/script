@@ -2,7 +2,7 @@ import cv2
 import numpy as npy
 import pyautogui
 import pytesseract
-from PIL import Image
+from PIL import Image, ImageEnhance, ImageFilter
 
 from const import *
 
@@ -16,23 +16,27 @@ class Word:
         self.dic = {}
 
     @staticmethod
-    def get_word_in_dic(word_image_path):
+    def get_word_in_dic(word_image_path: str) -> str:
         img = cv2.imread(word_image_path)
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         word = pytesseract.image_to_string(gray_img, lang="eng", config=CUSTOM_CONFIG)
         return word.replace("\n", "")
 
     @staticmethod
-    def get_translation_in_dic(translation_image_path):
+    def get_translation_in_dic(translation_image_path: str) -> list:
         """
         获取中文字段,同时可用于读取前30个词的翻译,和题干中的选项中文
         :param translation_image_path:
         :return:
         """
-        img = cv2.imread(translation_image_path)
-        gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        image = Image.open(translation_image_path)
+        image = image.convert('L')  # 转换为灰度图
+        enhancer = ImageEnhance.Contrast(image)
+        image = enhancer.enhance(2)  # 提高对比度
+        image = image.filter(ImageFilter.MedianFilter())  # 应用中值滤波去噪
+        image = image.point(lambda x: 0 if x < 140 else 255)
         result = pytesseract.image_to_string(
-            gray_img, lang="chi_sim", config=r"--oem 3 --psm 6"
+            image, lang="chi_sim", config=r"--oem 3 --psm 6"
         ).splitlines()
         # 去除可能的空行,同时去除可能出现的多识别的非中文字符
         result = [
@@ -43,16 +47,16 @@ class Word:
         print(result)
         return result
 
-    def creat_dic(self, word_image_path, translation_image_path):
+    def creat_dic(self, word_image_path: str, translation_image_path: str) -> None:
         word = self.get_word_in_dic(word_image_path)
         translation = self.get_translation_in_dic(translation_image_path)
         self.dic[word] = translation
 
-    def get_dic(self):
+    def get_dic(self) -> dict:
         return self.dic
 
     @staticmethod
-    def get_word_in_question(question_image_path):
+    def get_word_in_question(question_image_path: str) -> str:
         """
         获取题干中标记为绿色的单词,先使用掩码将非绿色部分标记为白色,之后读取转化后的图片获取单词
         :param question_image_path: 题干的图片路径

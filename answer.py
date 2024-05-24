@@ -15,7 +15,7 @@ class Answer:
         self.wrong_answer = 0
 
     @staticmethod
-    def get_similarity(str1, str2) -> float:
+    def get_similarity(str1: str, str2: str) -> float:
         """
         获取两组字符的相似度,使用jacquard算法,用于获取正确选项
         :return: 相似值,∈[0,1],越高说明越相似
@@ -27,7 +27,7 @@ class Answer:
         return intersection / union
 
     @staticmethod
-    def get_origin_word(word_get, word_dic) -> str:
+    def get_origin_word(word_get: str, word_dic: dict) -> str:
         """
         获取当前单词的词根
         :param word_dic: 词典
@@ -67,7 +67,7 @@ class Answer:
         return len(result)
 
     @staticmethod
-    def is_red(rgb) -> bool:
+    def is_red(rgb: tuple) -> bool:
         """
         一个题做错时,所点击的选项会变成红色,以此判断是否做错
         判断 RGB 值是否为红色
@@ -76,7 +76,7 @@ class Answer:
         return b < 10 or (r - g > 150 and r - b > 150)
 
     @staticmethod
-    def is_green(rgb) -> bool:
+    def is_green(rgb: tuple) -> bool:
         """
         两次都做错,会进入释义界面,在固定位置会有一个绿点,以此判断
         判断给定的 RGB 值是否属于绿色。
@@ -85,7 +85,7 @@ class Answer:
         return g > r and g > b
 
     @staticmethod
-    def get_options(translations, options) -> list:
+    def get_options(translations: list, options: list) -> list:
         """
         获取当前单词对应的可能选项
         :param translations:某一单词的字典翻译list
@@ -112,7 +112,7 @@ class Answer:
         print(options_result)
         return options_result
 
-    def answer_and_check(self, option_region, options):
+    def answer_and_check(self, option_region: tuple, options: list) -> None:
         pyautogui.click(option_region[options[0]][0], option_region[options[0]][1])
         time.sleep(0.3)
         screenshot1 = ImageGrab.grab()
@@ -133,10 +133,10 @@ class Answer:
             pyautogui.click(NEXT_BUTTON_REGION[0], NEXT_BUTTON_REGION[1])
             time.sleep(1.0)
 
-    def show_result(self):
+    def show_result(self) -> None:
         print("正确率为" + str(100 * (1 - self.wrong_answer / self.question_num)) + "%")
 
-    def get_word_in_listen_part(self, options_get, word_dic) -> list:
+    def get_word_in_listen_part(self, options_get: list, word_dic: dict) -> list:
         """
         获取听力部分每一个选项对应的单词
         :param options_get: 选项内容list
@@ -160,7 +160,7 @@ class Answer:
             word_res.append(res)
         return word_res
 
-    def answer_routine(self, word_dic):
+    def answer_routine(self, word_dic: dict) -> None:
         """
         答题流程
         :param word_dic: 词典
@@ -196,7 +196,7 @@ class Answer:
             raise IndexError
         self.question_num += 1
 
-    def listen_routine(self, word_dic):
+    def listen_routine(self, word_dic: dict) -> None:
         pyautogui.screenshot(
             TRANSLATION_IN_QUESTION_PATH, region=LISTEN_OPTION_REGION
         )
