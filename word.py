@@ -19,7 +19,7 @@ class Word:
     def get_word_in_dic(word_image_path: str) -> str:
         img = cv2.imread(word_image_path)
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        word = pytesseract.image_to_string(gray_img, lang="eng", config=CUSTOM_CONFIG)
+        word = pytesseract.image_to_string(gray_img, lang="eng", config=ENGLISH_CONFIG)
         return word.replace("\n", "")
 
     @staticmethod
@@ -75,7 +75,7 @@ class Word:
         result = cv2.bitwise_and(image_cv, image_cv, mask=mask)
         result[mask == 0] = [255, 255, 255]
 
-        text = pytesseract.image_to_string(result, lang="eng", config=CUSTOM_CONFIG)
+        text = pytesseract.image_to_string(result, lang="eng", config=ENGLISH_CONFIG)
         return text.strip().lower().replace(" ", "")
 
     def routine(self):

@@ -195,10 +195,3 @@ class Answer:
             print("选项识别错误")
             raise IndexError
         self.question_num += 1
-
-    def listen_routine(self, word_dic: dict) -> None:
-        pyautogui.screenshot(
-            TRANSLATION_IN_QUESTION_PATH, region=LISTEN_OPTION_REGION
-        )
-        options_get = Word.get_translation_in_dic(TRANSLATION_IN_QUESTION_PATH)[:4]
-        print(self.get_word_in_listen_part(options_get, word_dic))

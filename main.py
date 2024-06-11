@@ -15,9 +15,7 @@ if __name__ == '__main__':
     for k in range(m):
         try:
             answer.answer_routine(word_dic)
-        except KeyError:
-            input("识别错误,请自行完成本题目,按任意键继续")
-        except IndexError:
-            input("识别错误,请自行完成本题目,按任意键继续")
+        except KeyError or ValueError:
+            input("识别错误,请自行完成本题目,按回车键继续")
 
     answer.show_result()

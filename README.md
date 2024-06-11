@@ -1,30 +1,41 @@
 # 基于 python 的词达人答题脚本
 
-python 脚本  
 openCV 图像+pytesseract 文本识别+pyautogui 实现自动操作+numpy 数值计算
 
 ## 前言
 
-我目前正在读大一,有一门课程的作业一直深深困扰着我,也就是词达人的作业.每次都有海量的单词的冗余的题目,不仅对于词汇的提高非常有限,反而增加了负担。而这样大量的重复工作正是每一个程序员所深恶痛绝的，因此在课程期间，我自学了 python 及其部分应用，在课余时间，我利用 python 编写了一个基于 openCV 图像+pytesseract 文本识别+pyautogui 实现自动操作+numpy 数值计算的词达人自动答题脚本。该脚本可以自动识别题目，自动选择答案，并自动提交答案，正确率可以稳定在 85%以上，大幅度实现了降本增效，这也正是编程的目的与乐趣所在
-
----
+我目前正在读大一,有一门课程的作业一直深深困扰着我,也就是词达人的作业.每次都有海量的单词的冗余的题目,不仅对于词汇的提高非常有限,反而增加了负担。而这样大量的重复工作正是每一个程序员所深恶痛绝的，因此在课程期间，我自学了
+python 及其部分应用，在课余时间，我利用 python 编写了一个基于 openCV 图像+pytesseract 文本识别+pyautogui
+实现自动操作+numpy 数值计算的词达人自动答题脚本。该脚本可以自动识别题目，自动选择答案，并自动提交答案，正确率可以稳定在
+85%以上，大幅度实现了降本增效，这也正是编程的目的与乐趣所在。
 
 ## 以下是程序设计报告内容
 
-**目**
+**目录**
 
-学生选课系统
+词达人答题脚本
 
-摘要
+第 一 章 绪论
 
-第 一 章 绪 论
+1.1 开发环境
 
-1.1 答题流程&思路
-
-1.2 开发环境
 第二章 功能实现
 
-第三章 总体设计
+2.1.1 答题模式
+
+2.1.2 思路
+
+第三章 详细设计
+
+3.1 总体结构及功能模块划分
+
+3.2 获取词典界面的单词和释义
+
+3.3 获取题目和选项的文本内容
+
+3.4 对比分析，获取最可能的选项列表
+
+3.5 自动操作，流程处理
 
 第四章 详细设计
 
@@ -32,592 +43,309 @@ openCV 图像+pytesseract 文本识别+pyautogui 实现自动操作+numpy 数值
 
 第六章 课程设计心得
 
-参考文献
+## **_第 一 章_** **_绪论_**
 
-5 篇，含 3 篇期刊 2 篇图书
+### **1.1** **_开发环境_**
 
-**学生选课系统**
+**_开发工具_**: PyCharm2023。PyCharm 是由 JetBrains 公司开发的一款 Python 集成开发环境（IDE），被广泛认可为最优秀的 Python
+开发工具之一。PyCharm 提供了丰富而强大的功能，包括智能代码提示、代码自动补全、代码重构、Python web 开发、版本控制工具集成（如
+Git、SVN 等）、单元测试、代码分析以及创新的 GUI 设计支持等。本实验使用 Python3.8 开发 。
 
-# **摘要**
+**_开发语言_**: Python。Python 是一种高级面向对象的编程语言，它继承了多种语言的优点，并摒弃了其他语言中的复杂性，使得 Python
+具有强大而简单易用的特点。Python 在设计之初就注重简洁、易读和可维护性，因此被称为一种“优雅的”编程语言。
 
-本文描述的是基于 Java Swing[4] 的学生选课系统，主要编程思想有， java 封装继承多态[1], java 设计模式[2]， java 反射[3]，还有 MYSQL 数据库[5] 的增删改查功能的实现。主要功能模块包括：课程信息包括：课程编号，课程名称，课程性质，学时，理论课学时，实验课学时，学分，开课学期。学生选课信息包括：学 号，所选课程编号。学生选课系统的功能要求：
+**_所用库_**:openCV, pytesseract, pyautogui,
+numpy。OpenCV 主要用于对图片进行处理从而提高识别效率，使用 pytesseract 识别文本。pyautogui 可以通过 python
+程序模拟人鼠标点击操作实现自动化，numpy 则用于数值高效计算，实现算法，提高自动化效率。
 
-**_管理员:_**
+## **_第二章_** **思路及分析**
 
-（1） 专业信息管理
+#### 2.1.1 答题模式
 
-（2） 班级信息管理（班级属于某个专业）
+词达人的答题模式为：
 
-（3） 学生信息管理（学生属于某个班级）
+（1）一次作业为一个小测试，一共有三十个词语，通过自由选择一定数量的词语进入练习。
 
-（4） 教师信息录入
+（2）练习开头会用词典的形式展现单词的释义、词义。
 
-（5） 可选课程信息录入（含课程编号，学分，与授课教师信息绑定，最多可上课人数）；
+（3）展示完所有选择的单词的词典界面之后，会给出与所选词数大致相等的练习题，形式为给出一段距离，其中关键词语用绿色标出，有四个选项对应该词语的释义，有两次机会做答，选择错误则进入下一题，答完题目即为完成。
 
-（6） 修改课程信息；
+（4）当所有词语都被选择完并作答后，该测试即为完成。
 
-（7） 查找已知课程编号的课程信息；
+#### 2.1.2 思路
 
-（8） 查找已知课程名称的课程信息；
+（1） 识别文本，建立词典。由于答题界面的区域可通过 windows 的分屏功能和系统分辨率确定，固可以通过 openCV
+识别功能记录单词和单词释义，创建一个临时词典。
 
-（9） 设置选课开始结束时间，并发布选课公告
+（2） 提取题干，对比分析。通过 openCV 获取题干中的绿色单词和选项文本，通过对比分析和匹配算法，获取最可能的选项列表。
 
-（10） 设置选课规则：每个学生最多选 3 门，3 可设置
+（3） 自动操作，流程处理。通过 pyautogui 实现自动操作，并按照一定的逻辑处理流程。
 
-（11） 查看选课结果（看每门课已有多少人选课 ，并显示 已选人数/最大选课人数 的值）
+## **第三章** **详细设计**
 
-（12） 按课程编号浏览选了该课的学生信息
+### **3.1** **_总体结构及功能模块划分_**
 
-**_学生：_**
+运行时通过实例化 word 类，通过函数调用创建一个字典，并通过 answer 类中的逻辑处理执行答题。
 
-（13） 登录
+可分为 Word 类，Answer 类，和 Const 类，Word 类用于识别文本创建词典，其中包含读取文本内容的静态函数
 
-（14） 查看选课公告，获知选课开始结束时间
+Word 类
 
-（15） 查看可选课程信息（课程简介，教师简介）
+![img](pic_used_in_word/word.png)
 
-（16） 选课
+Answer 类
 
-（17） 自动选课：在选课开始结束期间方能使用的功能，当课程名额有空缺时，最早对该课程使用自动选课功能的学生获得名额。 一个学生最多能同时对 3 门课程使用自动选课。当学生选够 3 门课程（选课规则中的设置）时，其设置的自动选课功能失效。
+![img](pic_used_in_word/answer.png)
 
-（18） 撤销选课（选课未结束前可撤销，最多可撤销 5 次）
+其中，const 类中存放的主要为一些常量和读取常量的函数，此处就不展示了。
 
-（19） 查看已选课程
+下面进行详细流程设计和算法设计
 
-本篇报告介绍一个学生选课系统的从分析到设计最后到开发的全过程为，给出了学生选课系统的设计和技术实现的过程，特别在细节上分析功能和函数的实现思想。涉及到学生选课系统管理的基本功能在本报告中都有相应的描述。
+### **3.2** **_获取词典界面的单词和释义_**
 
-## **_第 一 章_** **_绪 论_**
+通过记录数据，得到单词所在区域和释义所在区域，首先初始化一个 word 类，其含有一个空字典，用于生成词典。
 
-### **1.1** **_基本要求_**
+对于获取英文单词，使用 openCV 进行预处理和使用特殊的 config 使得图像内容更加突出，提高准确率。函数如下
 
-所有题目都需要 GUI 实现界面，如果需要存储数据的，可选择 mysql 或 sqlite(文本数据库，不需要 安装，推荐)。对于输入的数据，要求做到一次录入，重复使用，如题 2，录入好部门 A 信息后，添加部门 A 的 员工时，不需要再手动输入部门 A，而是使用下拉框形式选择。
-
-### **1.2** **_开发环境_**
-
-**_数据库_**: **_Mysql8.0 ,_** 关系型数据库,MySQL 是一种关系型数据库管理系统，关系数据库将数据保存在不同的表中，而不是将所有数据放在一个大仓库内，这样就增加了速度并提高了灵活性。
-
-**_开发工具_**: **_IDEA 2020_** , IDEA 全称 IntelliJ IDEA，是 java 编程语言开发的集成环境。IntelliJ 在业界被公认为最好的 java 开发工具，尤其在智能代码助手、代码自动提示、重构、JavaEE 支持、各类版本工具([git](https://baike.baidu.com/item/git/12647237)、[svn](https://baike.baidu.com/item/svn/3311103)等)、JUnit、CVS 整合、代码分析、 创新的 GUI 设计等方面的功能可以说是超常的。
-
-**_开发语言: Java 。_**Java 是一门[面向对象](https://baike.baidu.com/item/面向对象)编程语言，不仅吸收了[C++](https://baike.baidu.com/item/C++)语言的各种优点，还摒弃了 C++里难以理解的[多继承](https://baike.baidu.com/item/多继承)、[指针](https://baike.baidu.com/item/指针/2878304)等概念，因此 Java 语言具有功能强大和简单易用两个特征。Java 语言作为静态面向对象编程语言的代表，极好地实现了面向对象理论，允许程序员以优雅的思维方式进行复杂的编程 。
-
-**_包管理: Maven 。_** Maven 项目对象模型(POM)，可以通过一小段描述信息来管理项目的构建，报告和[文档](https://baike.baidu.com/item/文档/1009768)的[项目管理工具](https://baike.baidu.com/item/项目管理工具/6854630)软件。
-
-**_框架:_** **_BeautyEye_** **_。_** BeautyEye 是一款 Java Swing 跨平台外观（look and feel）实现。得益于 Android 的 GUI 基础技术，BeautyEye 的实现完全不同于其它外观。
-
-### **1.3** **_本报告的主要内容_**
-
-本报告详细的介绍了学生信息管理系统的开发过程，主要涉及到的工作如下：系统的需求分析、系统的总体设计、系统的概念设计、系统各模块的详细设计、系统运行与测试。
-
-## **_第二章_** **需求分析**
-
-### **2.1** **_系统需求简介_**
-
-#### 2.1.1 系统目标
-
-（1） 根据 SQL 查询实现对账号，专业，班级，学生，教师，课程，可选课程，选课等信息的查询
-
-（2） 账号，专业，班级，学生，教师，课程，可选课程，选课，等信息的增加、删除、修改
-
-(3） 对基本信息完成增加、删除、修改时，需注意表与表之间的关联
-
-#### 2.1.2 功能需求分析
-
-（1） 信息查询：每个实体信息都会对应到数据库中的相应字段，而每个实体都有相应的 ID，也就是唯一标识码与之对应，可以使用 ID 对每个实体进行相应的查询。
-
-2） 信息管理：根据 ID 对信息更新、插入、删除；
-
-（3） 信息录入：读取输入的实体信息，并生成对应的随机 ID，使用数据检验系统，进行对数据的检验，最后插入到数据库中。
-
-#### 2.1.3 性能需求分析
-
-（4） 登录、用户界面需求：简洁、易懂、易用、友好的用户界面。
-
-（5） 安全保密性需求：只有凭借用户名和密码登陆系统，才能进行信息的管理等。
-
-## **第三章** **总体设计**
-
-### **3.1** **_设计概述_**
-
-根据需求把整个系统分化成不同的模块，每个模块完成一个特定的子功能。把这些模块结合起来组成一个整体。逐一实现各个功能；
-
-### **3.2** **_系统总体结构及功能模块划分_**
-
-系统总体结构，我将划分为三层： 业务层，视图层，控制层，也就是经典的 MVC 架构模式。
-
-![img](img/README/wps1.jpg)
-
-#### **3.2.1** **_业务层_**
-
-业务层也就是 MVC 架构模式中的 M - model 业务模型。业务层我将分为 2 个部分，第一个部分是 数据层，第二个部分是业务层。 数据层的功能就是对数据的控制，增删改查，业务层就是对数据层的进一步封装，并且进行业务逻辑的处理。
-
-#### **3.2.2** **_视图层_**
-
-视图层也就是 MVC 架构模式中的 V- view 用户界面。 视图层将采用 Java Swing GUI 框架 + BeautyEye 样式美化，进行视图层的设计。
-
-#### **3.2.3** **_控制层_**
-
-控制层也就是 MVC 架构模式中的 C - controller 控制器。 控制层将采用一个自定义的 JWT 组件，此组件可以通过结合 业务层和视图层，进行业务层和视图层的代码分离。
-
-### **3.3** **_系统数据库概念结构设计_**
-
-根据对数据项与数据结构的分析，设计出能够满足系统需求的各种实体，及它们之间的关系，为后面的逻辑结构设计打下基础。
-
-（一）管理员表
-
-![img](img/README/wps2.jpg)
-
-（二）学生表
-
-![img](img/README/wps3.jpg)
-
-（三）教师表
-
-![img](img/README/wps4.jpg)
-
-（四）专业信息表
-
-![img](img/README/wps5.jpg)
-
-（五）课程信息表
-
-![img](img/README/wps6.jpg)
-
-（六）班级信息表
-
-![img](img/README/wps7.jpg)
-
-（七）可选课程信息表
-
-![img](img/README/wps8.jpg)
-
-（八）系统配置表
-
-![img](img/README/wps9.jpg)
-
-（九）学生选课表
-
-![img](img/README/wps10.jpg)
-
-（十）自动选课表
-
-![img](img/README/wps11.jpg)
-
-（十一）选课撤销表
-
-![img](img/README/wps12.jpg)
-
-### **3.4** **_界面设计_**
-
-![img](img/README/wps13.jpg)
-
-### **3.5** **_安全保密设计_**
-
-#### 3.5.1 用户登录安全性
-
-系统设计了登录界面，每个合法用户有用户名及一个密码，只有当用户输入正确的用户名及密码组合后才能够对学生信息进行操作。
-
-## **第四章** **详细设计**
-
-### **4.1** **_概述_**
-
-详细设计阶段的根本目标是确定应该怎样具体的实现所要求的系统，也就是说，经过这个阶段的设计工作，应该得出目标系统的精确描述，从而在编码阶段可以把这个描述直接翻译成用某种程序设计语言书写的程序。
-
-### **4.2** **_系统程序流程图_**
-
-程序流程图又称为程序框图，它是历史悠久使用最广泛的描述软件设计的方法。它可将整个程序的总体流程清楚明白的显示出来。如图 4.2.1 系统总流程图结构。
-
-![img](img/README/wps14.png)
-
-图 4.2.1 系统总体流程图
-
-### **4.3** **_系统主要功能模块简介_**
-
-#### **4.3.1** **_项目结构_**
-
-![img](img/README/wps15.jpg)
-
-#### **4.3.2** **_项目结构解析_**
-
-```
- |-- cn
-
-  |  |-- enncy		cn.enncy 包
-
-  |    |-- io		I/O 工具类包
-
-  |    |-- mybatis	手写实现的模拟 Mybatis 框架包
-
-  |    |-- reflect	java 反射工具类包
-
-  |    |-- scanner	java 包扫描器
-
-  |    |-- scs		学生管理系统核心源码
-
-  |      |-- Application.java	Main 类
-
-  |      |-- exception			异常包
-
-  |      |-- factory			工厂模式包
-
-  |      |-- mapper				数据层包
-
-  |      |-- pojo				java pojo 对象包
-
-  |      |-- service			业务层包
-
-  |      |-- swing				swing 组件包
-
-  |      |  |-- component			通用组件
-
-  |      |  |  |-- dialog				弹窗
-
-  |      |  |  |-- frame				通用窗体
-
-  |      |  |  |-- panel				容器
-
-  |      |  |  |-- scroll				滚动组件
-
-  |      |  |  |-- table				表格组件
-
-  |      |  |  |-- title				自定义标题栏窗体
-
-  |      |  |-- constant			常量
-
-  |      |  |-- frame				窗体
-
-  |      |  |  |-- base
-
-  |      |  |    |-- view		视图
-
-  |      |  |      |-- index		首页
-
-  |      |  |        |-- card				卡片布局组件
-
-  |      |  |          |-- component			通用组件
-
-  |      |  |          |  |-- dialog				自定义弹窗
-
-  |      |  |          |-- courses			课程卡片
-
-  |      |  |          |-- information			信息卡片
-
-  |      |  |          |-- personal			个人信息卡片
-
-  |      |  |          |-- statistics			统计卡片
-
-  |      |  |-- utils		组件工具类
-
-  |      |-- utils		工具类
-
-  |-- resource		资源文件
-
-  |-- icon			图标
-
-  |-- sql			mysql 脚本文件
+```python
+def get_word_in_dic(word_image_path: str) -> str:
+    img = cv2.imread(word_image_path)
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # 将图像从彩色转换为灰度图像
+    word = pytesseract.image_to_string(gray_img, lang="eng", config=ENGLISH_CONFIG)
+    return word.replace("\n", "")
 ```
 
-#### **4.3.3** **\*数据表初始化\*\*\*\***系统\*\*\*
-
-使用 Java 提供的**_类反射原理_** + **_注解_** + **_Java 包扫描 ，_**来构建一个初始化系统数据表系统。使用 Java 包扫描，扫描本项目的指定包下的所有 java 类，并将扫描到的类，加载到一个 Class[] 数组中，并返回。 使用 java 反射原理， 通过包扫描获取扫描到的类，进行反射，获取类上的 **_@Mapper_** 注解，获取指定的 name 属性 ， 然后到资源文件夹 sql 中，读取到指定 name 的 sql 文件, 并且执行 sql 文件中的建表文件，如果表已经存在，那么将不会创建。
-
-#### **4.3.4** **_Mybatis 数据业务层系统_**
-
-​
-
-使用 Java 提供的**_类反射原理_** + **_注解 + 动态代理的设计模式 ，_** 来构建一个 Mybatis 数据层系统， 首先通过一个 **_ServiceComponentFactory_** 业务组件工厂， 来静态初始化所需的业务组件， 然后在业务组件初始化的时候， 通过 **_SqlSession_** 进行对组件的 **_动态代理，_** 当业务组件中执行业务的时候， 读取业务方法上的 **_@SQL_** 注解，执行注解的 sql 语句，并进行**_解析和执行_**，最后对返回数据进行**_封装_**，封装后**_返回_**最终的数据。
-
-#### **4.3.5** **\*C\*\*\*\***ontroller 控制器系统\*\*\*
-
-使用 Java **_封装，继承，多态_**的特点。来构建一个控制器系统，首先通过 **_ServiceComponentFactory_** 业务组件工厂，进行组件的初始化后，返回一个抽象类的 Swing 组件 **_ServiceComponent_** ， 这个组件有 初始化组件，设置组件，更新组件，设置数据，更新数据，获取数据，获取业务，等等抽象方法， 通过各种与界面交互，和与数据交互的方法，来实现 界面与数据库的交互，并解决了代码的耦合。子类可以通过拓展 **_ServiceComponent ，_** 来进行业务组件的拓展。
-
-## **第五章** **主要功能模块代码**
-
-### **5.1** **_数据表初始化系统_**
-
-**（一）** **扫描 cn.enncy.scs.mapper 包**
-
-![img](img/README/wps16.jpg)
-
-**（二）** **通过包扫描获取的类，进行注解分析**
-
-![img](img/README/wps17.jpg)
-
-**（三）** **通过注解获取相应的 sql 文件名，并获取文件内容**
-
-![img](img/README/wps18.jpg)
-
-**（四）** **读取内容，建表**
-
-![img](img/README/wps19.jpg)
-
-![img](img/README/wps20.jpg)
-
-### **5.2** **\*M\*\*\*\***VC 架构实现\*\*\*
-
-![img](img/README/wps21.jpg)
-
-（一）使用**\*S\*\*\*\***erviceComponentFactory**\*\***.java 组件**\*\***静态工厂**_模式，通过静态代码块执行 _**initServiceComponent**_() 方法， 判断组件是否在 Map 集合中存在，如果存在，则获取并返回组件，如果不存在，_**则通过反射获取组件的构造器，并且传入相应的业务参数，最后实例化组件，并且保存到 Map 集合中\*\*\*。![img](img/README/wps22.jpg)
-
-![img](img/README/wps23.jpg)
-
-（二） 当业务组件在 **\*initServiceComponent\*\*\*\***()**_ 方法中被实例化的时候，会被注入一个 _**BaseService**_参数，而这个参数会从 _**ServiceFactory.java**_ 静态业务工厂中实例化并获取。 当业务实例化的时候，会自动被 _**Sqlsession.getMapper(BaseMapper) 方法中被动态代理，\*\*\*
-
-![img](img/README/wps24.jpg)
-
-![img](img/README/wps25.jpg)
-
-（三） 当子类调用 **_BaseService_**中的方法的时候， **_动态代理_**会读取并执行方法上的 **_@SQL_** 注解，并执行相应的 sql 语句，通过反射获取方法上的**_返回值，_**确定返回值的类型后，**_通过一系列的方法将 sql 执行结果转换成 返回值的类属性_**， 最后通过反射获取到返回值的构造器，通过构造器实例化，**_并将实例化结果 赋值到 动态代理的返回值_**
-
-![img](img/README/wps26.jpg)
-
-![img](img/README/wps27.jpg)
-
-（四）最后， **_BaseService_**会在初始化的时候，通过**\*S\*\*\*\***erviceComponentFactory**\*\***工厂，**_获取相应的业务组件。然后将代理返回的结果，返回给_**MainFrame**_窗体中的_**ServiceComponent\*\*\* 子组件，并且通过每个子组件的 updatexxx 方法，通知子组件进行视图的更新。
-
-![img](img/README/wps28.jpg)
-
-### **5.3** **_登录界面代码设计_**
-
-![img](img/README/wps29.jpg)
-
-![img](img/README/wps30.jpg)
-
-![img](img/README/wps31.jpg)
-
-### **5.4** **_管理员首页界面代码设计_**
-
-![img](img/README/wps32.jpg)
-
-![img](img/README/wps33.jpg)
-
-![img](img/README/wps34.jpg)
-
-### **5.5** **_专业信息管理_**
-
-![img](img/README/wps35.jpg)
-
-![img](img/README/wps36.jpg)
-
-### **5.6** **_班级信息管理_**
-
-![img](img/README/wps37.jpg)
-
-![img](img/README/wps38.jpg)
-
-### **5.7** **_学生信息管理_**
-
-![img](img/README/wps39.jpg)
-
-![img](img/README/wps40.jpg)
-
-![img](img/README/wps41.jpg)
-
-![img](img/README/wps42.jpg)
-
-### **5.8** **_教师信息管理_**
-
-![img](img/README/wps43.jpg)
-
-![img](img/README/wps44.jpg)
-
-### **5.9** **_课程信息管理_**
-
-![img](img/README/wps45.jpg)
-
-![img](img/README/wps46.jpg)
-
-### **5.10** **_授课信息管理_**
-
-![img](img/README/wps47.jpg)
-
-![img](img/README/wps48.jpg)
-
-### **5.11** **_可选课程信息管理_**
-
-![img](img/README/wps49.jpg)
-
-![img](img/README/wps50.jpg)
-
-### **5.12** **_选课信息管理_**
-
-（一）学生界面
-
-![img](img/README/wps51.jpg)
-
-（二）选课结果
-
-![img](img/README/wps52.jpg)
-
-（三）撤销选课
-
-![img](img/README/wps53.jpg)
-
-（四）选课详情信息
-
-![img](img/README/wps54.jpg)
-
-### **5.13** **_学生选课辑设计_**
-
-学生选课逻辑的设计是本次综合实训的核心思想，也是核心代码，所以我们来说一下这个应该怎么样设计。
-
-（一）首先分析选课逻辑
-
-1. 创建专业
-
-2. 创建班级
-
-3. 创建老师
-
-4. 创建课程
-
-5. 创建学生
-
-6. 将课程分派给指定教师
-
-7. 将课程标记为可选课程
-
-8. 选课开始
-
-9. 学生查看可选课程
-
-10. 学生查看可选课程信息
-
-11. 学生进行选课
-
-12. 系统判断选课是否成功
-
-13. 如果选课不成功，则开启自动选课
-
-14. 创建学生选课信息
-
-15. 学生查看选课结果
-
-16. 学生查看选课结果信息
-
-17. 选课结束
-
-（二）代码实现
-
-1. 创建专业
-
-2. 创建班级
-
-3. 创建老师
-
-4. 创建课程
-
-5. 创建学生
-
-6. 将课程分派给指定教师
-
-7. 将课程标记为可选课程
-
-   以上几个代码的实现，主要是通过 BaseMapper 中的 **_@SQL 注解_** ， 在调用 insert 方法后，方法会被动态代理解析，最后执行相应的 sql 语句
-
-   INSERT IGNORE INTO #{表名}(#{属性列的名字}) value(#{属性列的值})
-
-   而表名，属性列的名字，属性列的值， 动态代理会根据相应的 POJO 类， 进行反射获取，
-
-   **_例如专业类: Major.java_**
-
-   ![img](img/README/wps55.jpg)
-
-   专业类有 name 和 description 2 个属性，而这 2 个属性也对应着数据库的字段名，每个 POJO 类都是如此。
-
-   #{TABLE_NAME} 相应的也就会被解析成 : majors
-
-   (#{KEY_ARRAY}) 相应的也就会被解析成 : (name,description)
-
-   (#{VALUE_ARRAY}) 相应的也就会被解析成 : (“计算机科学与技术”,”计算机科学与技术专业”)
-
-   所以，最终的解析结果是 :
-
-   INSERT IGNORE INTO majors(name,description) value (“计算机科学与技术”,”计算机科学与技术专业”);![img](img/README/wps56.jpg)
-
-   每个 Service 类都是如此，所以创建专业，创建班级，创建老师，创建课程，创建学生，等等操作，都可以得代码的复用，以及解耦
-
-8. 选课开始
-
-   通过初始化类，我们可以在数据库中初始化选课开始时间![img](img/README/wps57.jpg)
-
-   如果当前是选课时间，则管理员可以设置选课公告![img](img/README/wps58.jpg) ![img](img/README/wps59.jpg)
-
-   当学生选课时，程序会判断当前时间是否在选课时间
-
-   ![img](img/README/wps60.jpg)
-
-   学生查看可选课程通过 OptioncalCourseMapper 我们查询可以获取可选的课程，也就是可选的授课。![img](img/README/wps61.jpg)
-
-9. 学生查看可选课程信息
-
-10. 学生进行选课
-
-11. 系统判断选课是否成功
-
-12. 如果选课不成功，则开启自动选课
-
-13. 创建学生选课信息
-
-    通过 SelectionService 我们可以在学生插入课程的时候，加入一些条件，例如![img](img/README/wps62.jpg) ![img](img/README/wps63.jpg)
-
-    选课业务中调用以上方法，系统自动判断是否在选课时间，是否开启自动选课，学生是否成功选课，以及选课成功后添加信息。![img](img/README/wps64.jpg)
-
-14. 学生查看选课结果
-
-15. 学生查看选课结果信息
-
-16. 通过选课表进行信息的查询
-
-17. 选课结束
-
-### **5.14** **_通用增删改查代码设计_**
-
-**_BaseMapper.java_**
-
-![img](img/README/wps65.jpg)
-
-**_BaseService.java_**
-
-![img](img/README/wps66.jpg)
-
-![img](img/README/wps67.jpg)
-
-## 第六章 课程设计心得
-
-本次的 java 综合实训 课程设计，让我对 java 有了一个全新的认识，从 java 的封装继承多态中，我学到了如何组织代码中的各个部分，从 java swing 中，我学会了如何管理各种组件，以及组件之间的通讯，传值，调用，依赖，并严格遵守设计模式的 6 大原则:
-
-1、单一职责原则，实现类要职责单一；
-
-2、里氏替换原则，不要破坏继承体系；
-
-3、依赖倒置原则，要面向接口编程；
-
-4、接口隔离原则，在设计接口的时候要精简单一；
-
-5、迪米特原则，要降低耦合；
-
-6、开闭原则，要对扩展开放，对修改关闭。
-
-实现了 java 的代码复用，实现了低内聚，高耦合的设计模式。并且我对于 java 反射原理也更加进一步的理解并实现， 反射机制其实在很多语言之中都有出现，而反射机制其实简单的来说，其实就是程序在运行的过程中，可以获取到程序本身。
-
-通过 java 的反射机制 + 注解 + 动态代理，我自己手动模拟并实现了一个简单的 Mybatis 数据持久层框架，
-
-通过 java 的反射机制 + 注解 + 包扫描，又实现了一个依赖注入原理类似的数据库表初始化系统。
-
-Java 的反射机制是动态程序的关键因素，由此应运而生了许许多多的优秀框架， 从我们最开始接触的 Tomcat + Servlet，到现在最流行的 spring, springmvc, springboot,springcloud 等等等等。不计其数的优秀框架开创了 java 的动态技术的先河。
-
-这次的综合实训让我受益匪浅，希望在以后的实训中我能学到更多！
-
-**参考文献**
-
-[1] (美)Bruce Eckel.Java 编程思想[M].机械工业出版社,2007
-
-[2] 龚炳江;文志诚;高建国.Java 程序设计[M].人民邮电出版社,2016
-
-[3] 王昊天,于航,商贝宁.Java 反射机制概述[J].电子世界,2020
-
-[4] 张丹丹.浅析 Java swing 组件窗体设计[J].电脑知识与技术,2020
-
-[5] 兰旭辉,熊家军,邓刚.基于 MySQL 的应用程序设计[J].计算机工程与设计,2004
-
-5 篇，含 3 篇期刊 2 篇图书
+其中
+
+```
+ENGLISH_CONFIG =r'--oem 3 --psm 6 -c tessedit_char_whitelist=abcdefghijklmnopqrstuvwxyz.'# 配置大模型参数，并且设置识别白名单，用于提高英文识别准确率
+```
+
+"--psm 6"的意义是按行识别,
+"tessedit_char_whitelist"的意义是设置识别白名单，只识别白名单中的字符，可以提高识别准确率,
+"--oem 3"的意义是使用 Tesseract 的默认模型，可以提高识别准确率。
+对于获取中文内容，同样使用预处理方式，使识别准确率提高
+
+```python
+def get_translation_in_dic(translation_image_path: str) -> list:
+    """
+    获取中文字段,同时可用于读取前30个词的翻译,和题干中的选项中文
+    :param translation_image_path:
+    :return:
+    """
+    image = Image.open(translation_image_path)
+    image = image.convert('L')  # 转换为灰度图
+    enhancer = ImageEnhance.Contrast(image)
+    image = enhancer.enhance(2)  # 提高对比度
+    image = image.filter(ImageFilter.MedianFilter())  # 应用中值滤波去噪
+    image = image.point(lambda x: 0 if x < 140 else 255)
+    result = pytesseract.image_to_string(
+        image, lang="chi_sim", config=r"--oem 3 --psm 6"
+    ).splitlines()
+    # 去除可能的空行,同时去除可能出现的多识别的非中文字符
+    result = [
+        line.replace(" ", "")
+        for line in result
+        if (line != "" and (line.isalnum() == False))
+    ]
+    print(result)
+    return result
+```
+
+经过测试，识别中文比识别英文需要的预处理更加复杂，需要通过灰度图转换，对比度增强，中值滤波，二值化等操作，并且使用机器学习模型才能得到较好地识别效果。
+通过以上两个函数，就可以通过对固定区域的截图，将图片路径作为参数传递，可以得到单词和对应中文释义，并点击继续按钮，从而创建词典。
+
+### **3.3** **_获取题目界面的单词和选项_**
+
+由于题目界面与词典界面不同，题干中句子的关键词由绿色标记，其余的单词为黑色，所以为了识别出绿色的单词，需要对图片进行色彩转换，规定一个绿色的范围，后通过掩码标记，将不属于这个范围的像素点全部转化为白色，从而得到绿色单词。
+
+```python
+def get_word_in_question(question_image_path: str) -> str:
+    """
+    获取题干中标记为绿色的单词,先使用掩码将非绿色部分标记为白色,之后读取转化后的图片获取单词
+    :param question_image_path: 题干的图片路径
+    :return:
+    """
+    image = Image.open(question_image_path)
+    image_cv = cv2.cvtColor(npy.array(image), cv2.COLOR_RGB2BGR)
+
+    # 定义绿色的 HSV 范围
+    lower_green = npy.array([60, 60, 60])
+    upper_green = npy.array([90, 255, 255])
+
+    # 将图片转换为 HSV 格式，并根据绿色范围创建掩码,把绿色部分标记为黑色,其余部分为白色
+    hsv = cv2.cvtColor(image_cv, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, lower_green, upper_green)
+    result = cv2.bitwise_and(image_cv, image_cv, mask=mask)
+    result[mask == 0] = [255, 255, 255]
+
+    text = pytesseract.image_to_string(result, lang="eng", config=ENGLISH_CONFIG)
+    return text.strip().lower().replace(" ", "")
+```
+
+效果如下：
+
+![img](pic_used_in_word/green_word.png)
+
+便可以得到题干中的单词 arrogant
+
+对于选项中的中文内容，这里有一个麻烦需要处理，由于不同的题干长度会导致题干占用的行数不同，从而使得选项所在区域是在变化的，解决办法就是先调用一个
+getLine 函数，获取当前界面的总行数。由于选项的行数确定为 4 行，而且形状确定，所以可以由 getLines 返回的行数确定截取范围。这里使用的
+python 的使用类名创建类的方法：
+
+```python
+line_name = eval("Line" + str(self.get_lines()))
+line = line_name()
+```
+
+line_name()
+定义在 const 文件中，每一个 line
+对应的类中含有数据读取函数和对应的数据，记录了选项所在区域和鼠标点击的坐标数据。至此，准备工作已经基本完成，现在已经获取了所选词语的字典，并且能够准确识别题干的关键词和选项的内容，接下来就是答题的逻辑了。
+
+#### **3.4 获取最佳选项**
+
+对于获取最佳选项的函数：
+
+```python
+def get_options(translations: list, options: list) -> list:
+    """
+    获取当前单词对应的可能选项
+    :param translations:某一单词的字典翻译list
+    :param options: 当前选项的list
+    :return: 一个存有2个选项代号的list,记录了当前题目最可能的答案选项
+    """
+```
+
+我们希望返回一个列表，其中从索引 0 到 1 记录了最可能的两个选项（当然，这两个选项一定是不一样的），这里的“最可能”模仿的是人做题时的思考逻辑，即先思考关键词有哪些释义，然后观察选项思考最接近的意思。
+这时，当单词仅仅有两个释义时，我们就可以直接返回这两个释义对应的最相似的选项；但是当单词有多个释义的时候，如果我们发现某一个释义在选项中找不到比较接近的（即释义和选项之间的最高匹配度较低），那就说明答案一定不会和这个释义对应。那么我们就可以依据释义与选项之间的最高匹配度进行排序，从而得到最可能在选项出现答案中的两个释义，并获取其对应的选项返回。
+因此我们可以设计一个算法，通过多次排序和比较，返回一个 2 元列表，列表中记录了最可能的选项。
+
+具体的算法设计如下：
+
+```python
+def get_options(translations: list, options: list) -> list:
+    """
+    获取当前单词对应的可能选项
+    :param translations:某一单词的字典翻译list
+    :param options: 当前选项的list
+    :return: 一个存有4个选项代号的list,记录了当前单词最可能的选项list
+    """
+    print("单词释义为" + str(translations))
+    options_dict = {}
+    for j in range(4):
+        # 每个选项内容对应一个按钮编号1-4
+        options_dict[options[j]] = j
+    options_result = []
+    # 只会有两次点击机会
+    max_sim_of_translation = {}
+    for t in range(len(translations)):
+        sim = {}
+        for option in options:
+            sim[option] = Answer.get_similarity(translations[t], option)  # 对于每一个释义，获取每一个选项与其的相似度
+        sim = sorted(sim.items(), key=lambda item: item[1], reverse=True)  # 从高到低排序
+        max_sim_of_translation[translations[t]] = sim[0]  # 记录当前释义的最大相似度 其值为一个元组（选项，相似度）
+    max_sim_of_translation = sorted(max_sim_of_translation.items(), key=lambda item: item[1][1], reverse=True)
+    options_result.append(options_dict[max_sim_of_translation[0][1][0]])
+    options_result.append(options_dict[max_sim_of_translation[1][1][0]])
+    print(options_result)
+    return options_result
+```
+
+因此，还需要设计一个返回字符串匹配度的函数，这里分为中文和英文判别。
+对于中文判断，使用 jacquard 算法,用于获取正确选项：
+
+```python
+def get_similarity(str1: str, str2: str) -> float:
+    """
+    获取两组字符的相似度,使用jacquard算法,用于获取正确选项
+    :return: 相似值,∈[0,1],越高说明越相似
+    """
+    set1 = set(str1)
+    set2 = set(str2)
+    intersection = len(set1.intersection(set2))
+    union = len(set1.union(set2))
+    return intersection / union
+```
+
+对于英文单词则相对复杂，由于英文单词在词典中以原型储存，而在句子中会出现各种时态，因此需要先将句子中的单词与词典中的词一一匹配字符串，这里需要考虑到字符顺序，返回两组字符串按照同一顺序的最大相同字符占比。
+算法设计如下：
+
+```python
+def get_origin_word(word_get: str, word_dic: dict) -> str:
+    """
+    获取当前单词的词根
+    :param word_dic: 词典
+    :param word_get: 当前题中的单词
+    :return: 当前单词的词根
+    """
+    word_res = word_get
+    word_len = len(word_get)
+    max_similarity = 0
+    for word in word_dic.keys():
+        max_len = max(len(word), word_len)
+        min_len = min(len(word), word_len)
+        same = 0
+        for i in range(min_len):
+            if word_get[i] == word[i]:
+                same += 1
+        if (similarity := same / max_len) > max_similarity:
+            max_similarity = similarity
+            word_res = word
+    return word_res
+```
+
+通过接收识别出的单词和词典作为参数，返回单词的词根。
+
+经过测试，这种算法能够比较准确地找到答案，并且能够保证在出现多个释义时，能够找到最接近的选项，准确率很高。
+
+#### **3.5 答题流程和异常处理**
+
+对于答题的流程，在 answer 类中设计了一个 routine 函数用于处理流程，抛出异常。对于答案错误的判断如下
+
+第一次若答错，会出现以下界面
+
+![img](pic_used_in_word/wrong.png)
+所以，可以通过在一定时间差后获取点击的选项所在坐标的 RGB 值，通过判断其是否为红色。若为红色，则选择 option_result 的第二个选项
+若依然错误，则会跳出一个解释词义的选项，并且有多行文字，此时再次调用 get_line 函数，若行数过大，则说明两次答案都错了，此时自动点击下方的继续按钮，进入下一题。
+
+判断颜色的函数代码如下，可通过获取 rgb 值判断
+
+```python
+def is_green(rgb: tuple) -> bool:
+    """
+    两次都做错,会进入释义界面,在固定位置会有一个绿点,以此判断
+    判断给定的 RGB 值是否属于绿色。
+    """
+    r, g, b = rgb
+    return g > r and g > b
+```
+
+至此，已经可以基本完成答题流程，实现较高的正确率。
+
+## **_第四章_** **运行结果**
+
+任意选取一次作业，进入界面选择 10 个单次后开始答题，此时需要输入单词个数 10
+
+读取单词生成词典时候控制台输出如下图：
+
+![img](pic_used_in_word/runtime1.png)
+可见，程序正确读取了单词，第一行是读取的单词释义，同时在第二行输出当前的词典全部内容便于调试。程序成功生成了词典，释义以列表形式储存便于读取释义。
+
+然后进入答题界面效果如下
+![img](pic_used_in_word/runtime2.png)
+
+此时，控制台会输出识别出来的的单词和最终的单词，中间便用到了我们写的还原词根的算法。比如：
+![img](pic_used_in_word/runtime3.png)
+![img](pic_used_in_word/runtime4.png)
+可以发现，在遇到变形如 rigged 时，程序可以正确还原为原型，同时当识别错误时如 disciose 错识别为 aisciose 时候，可以纠正为正确的单词。
+
+最后，程序会自动选择答案，并输出选择的答案，同时输出正确率。
+![img](pic_used_in_word/runtime5.png)
+
+经过多次测试，发现单词数量在 15-20 的时候效果最好，保证了正确率稳定在 90%以上。并且效率较高。运行的视频在附件中。
+
+至此，程序已经成功运行，并且能够实现识别-分析-答题一体，正确率较高，实现了自动答题的功能。
+
+## **_第五章_** **收获与总结**
+
+通过这次实验，我对 python 的强大功能有了进一步的了解，并且初始了一些计算机图形领域的一些应用和处理，提高了对 python 的理解和对编程的实际运用能力。

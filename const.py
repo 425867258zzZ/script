@@ -16,7 +16,7 @@ NEXT_BUTTON_REGION = (966, 1335)
 # 听力部分选项区域
 LISTEN_OPTION_REGION = (198, 546, 943, 686)
 # 识图config
-CUSTOM_CONFIG = r'--oem 3 --psm 6 -c tessedit_char_whitelist=abcdefghijklmnopqrstuvwxyz.'
+ENGLISH_CONFIG = r'--oem 3 --psm 6 -c tessedit_char_whitelist=abcdefghijklmnopqrstuvwxyz.'
 
 
 class Line:
@@ -43,7 +43,7 @@ class Line:
 
 class Line5(Line):
     # 包含绿色单词的题干区域
-    word_in_question_region = (60, 320, 1150, 105)
+    word_in_question_region = (60, 311, 1150, 105)
     # 题干选项区域
     translation_in_question_region = (320, 473, 700, 712)
     # 四个选项区域
