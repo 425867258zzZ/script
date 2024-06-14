@@ -20,6 +20,7 @@ class Answer:
         获取两组字符的相似度,使用jacquard算法,用于获取正确选项
         :return: 相似值,∈[0,1],越高说明越相似
         """
+        
         set1 = set(str1)
         set2 = set(str2)
         intersection = len(set1.intersection(set2))
