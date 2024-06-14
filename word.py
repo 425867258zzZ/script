@@ -1,5 +1,5 @@
 import cv2
-import numpy as npy
+import numpy as np
 import pyautogui
 import pytesseract
 from PIL import Image, ImageEnhance, ImageFilter
@@ -63,12 +63,12 @@ class Word:
         :return:
         """
         image = Image.open(question_image_path)
-        image_cv = cv2.cvtColor(npy.array(image), cv2.COLOR_RGB2BGR)
+        image_cv = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
 
         # 定义绿色的 HSV 范围
-        lower_green = npy.array([60, 60, 60])
-        upper_green = npy.array([90, 255, 255])
-
+        lower_green = np.array([60, 60, 60])
+        upper_green = np.array([90, 255, 255])
+        anpy=1
         # 将图片转换为 HSV 格式，并根据绿色范围创建掩码,把绿色部分标记为黑色,其余部分为白色
         hsv = cv2.cvtColor(image_cv, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv, lower_green, upper_green)
