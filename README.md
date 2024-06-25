@@ -91,11 +91,11 @@ numpy。OpenCV 主要用于对图片进行处理从而提高识别效率，使�
 
 Word 类
 
-![img](pic_used_in_word/word.png)
+![img](pic_used_in_pdf/word.png)
 
 Answer 类
 
-![img](pic_used_in_word/answer.png)
+![img](pic_used_in_pdf/answer.png)
 
 其中，const 类中存放的主要为一些常量和读取常量的函数，此处就不展示了。
 
@@ -185,7 +185,7 @@ def get_word_in_question(question_image_path: str) -> str:
 
 效果如下：
 
-![img](pic_used_in_word/green_word.png)
+![img](pic_used_in_pdf/green_word.png)
 
 便可以得到题干中的单词 arrogant
 
@@ -304,7 +304,7 @@ def get_origin_word(word_get: str, word_dic: dict) -> str:
 
 第一次若答错，会出现以下界面
 
-![img](pic_used_in_word/wrong.png)
+![img](pic_used_in_pdf/wrong.png)
 所以，可以通过在一定时间差后获取点击的选项所在坐标的 RGB 值，通过判断其是否为红色。若为红色，则选择 option_result 的第二个选项
 若依然错误，则会跳出一个解释词义的选项，并且有多行文字，此时再次调用 get_line 函数，若行数过大，则说明两次答案都错了，此时自动点击下方的继续按钮，进入下一题。
 
@@ -328,19 +328,19 @@ def is_green(rgb: tuple) -> bool:
 
 读取单词生成词典时候控制台输出如下图：
 
-![img](pic_used_in_word/runtime1.png)
+![img](pic_used_in_pdf/runtime1.png)
 可见，程序正确读取了单词，第一行是读取的单词释义，同时在第二行输出当前的词典全部内容便于调试。程序成功生成了词典，释义以列表形式储存便于读取释义。
 
 然后进入答题界面效果如下
-![img](pic_used_in_word/runtime2.png)
+![img](pic_used_in_pdf/runtime2.png)
 
 此时，控制台会输出识别出来的的单词和最终的单词，中间便用到了我们写的还原词根的算法。比如：
-![img](pic_used_in_word/runtime3.png)
-![img](pic_used_in_word/runtime4.png)
+![img](pic_used_in_pdf/runtime3.png)
+![img](pic_used_in_pdf/runtime4.png)
 可以发现，在遇到变形如 rigged 时，程序可以正确还原为原型，同时当识别错误时如 disciose 错识别为 aisciose 时候，可以纠正为正确的单词。
 
 最后，程序会自动选择答案，并输出选择的答案，同时输出正确率。
-![img](pic_used_in_word/runtime5.png)
+![img](pic_used_in_pdf/runtime5.png)
 
 经过多次测试，发现单词数量在 15-20 的时候效果最好，保证了正确率稳定在 90%以上。并且效率较高。运行的视频在附件中。
 

@@ -1,3 +1,7 @@
+"""
+仅支持2K分辨率显示屏下运行
+"""
+
 WORD_IMAGE_PATH = "image/word_image.png"
 TRANSLATION_IMAGE_PATH = "image/translation_image.png"
 TRANSLATION_IN_QUESTION_PATH = "image/translation_image.png"
